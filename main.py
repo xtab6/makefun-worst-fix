@@ -22,7 +22,13 @@ def main() -> int:
 
     out_dir = Path(os.environ.get("OUTPUT_DIR", "/output"))
     out_dir.mkdir(parents=True, exist_ok=True)
-    (out_dir / "entry.txt").write_text(MESSAGE + "\n", encoding="ascii")
+    target = out_dir / "entry.txt"
+    target.write_text(MESSAGE + "\n", encoding="ascii")
+    # Read back what was written: the grader judges the file, not the
+    # constant, so a silent write failure must not exit 0.
+    written = target.read_text(encoding="ascii").strip()
+    assert written == MESSAGE, "entry.txt does not match the message"
+    print(f"wrote {len(MESSAGE)}-char commit message to {target}")
     return 0
 
 
